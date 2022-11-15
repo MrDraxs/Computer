@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+scripts=($(ls $PWD/scripts/*.sh))
+
+for sc in ${scripts[*]}; do
+  chmod +x $sc
+  b=${sc##*/}
+  echo $b
+  echo "[moving $sc into /usr/local/bin as ${b%.*}]"
+  cp -r $sc /usr/local/bin/${b%.*}
+done
