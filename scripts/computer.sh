@@ -9,7 +9,13 @@ case "$1" in
 		elif [ -x "$(command -v pacman)" ];then
 			sudo pacman -S "$@"
 		elif [ -x "$(command -v apt)" ];then
-			sudo apt-get install "$@"
+			sudo apt install "$@"
+		elif [ -x "$(command -v dnf)" ];then
+			sudo dnf install "$@"
+		elif [ -x "$(command -v zypper)" ];then
+			sudo zypper install  "$@"
+		elif [ -x "$(command -v emerge)" ];then
+			sudo emerge "$@"
 		fi
 	;;
 	"update"|"upgrade") 
@@ -19,7 +25,13 @@ case "$1" in
 		elif [ -x "$(command -v pacman)" ];then
 			sudo pacman -Syu
 		elif [ -x "$(command -v apt)" ];then
-			sudo apt-get upgrade "$@"
+			sudo apt upgrade "$@"
+		elif [ -x "$(command -v dnf)" ];then
+			sudo dnf update "$@"
+		elif [ -x "$(command -v zypper)" ];then
+			sudo zypper update "$@"
+		elif [ -x "$(command -v emerge)" ];then
+			sudo emerge -[a]uDN @world "$@"
 		fi
  	;;
 	"search") 
@@ -29,7 +41,13 @@ case "$1" in
 		elif [ -x "$(command -v pacman)" ];then
 			sudo pacman -Ss "$@"
 		elif [ -x "$(command -v apt)" ];then
-			sudo apt-get search "$@"
+			sudo apt search "$@"
+		elif [ -x "$(command -v dnf)" ];then
+			sudo dnf search "$@"
+		elif [ -x "$(command -v zypper)" ];then
+			sudo zypper search "$@"
+		elif [ -x "$(command -v emerge)" ];then
+			sudo emerge -s "$@"
 		fi
  	;;
 	"uninstall"|"remove") 
@@ -37,9 +55,15 @@ case "$1" in
 		if [ -x "$(command -v xbps-install)" ];then
 			sudo xbps-remove "$@"
 		elif [ -x "$(command -v pacman)" ];then
-			sudo pacman -Rsc "$@"
+			sudo pacman -Rs "$@"
 		elif [ -x "$(command -v apt)" ];then
-			sudo apt-get remove "$@"
+			sudo apt autoremove "$@"
+		elif [ -x "$(command -v dnf)" ];then
+			sudo dnf remove "$@"
+		elif [ -x "$(command -v zypper)" ];then
+			sudo zypper remove "$@"
+		elif [ -x "$(command -v emerge)" ];then
+			sudo emerge -c "$@"
 		fi
  	;;
 esac
