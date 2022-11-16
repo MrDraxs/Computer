@@ -1,69 +1,61 @@
 #!/usr/bin/env bash
 
+pkg_managers=("xbps-install" "pacman" "apt" "dnf" "zypper" "emerge")
+
+for pkg in "${pkg_managers[@]}"
+do
+	if [ -x "$(command -v $pkg)" ];then
+		break
+	fi
+done
 case "$1" in
 	"reboot") sudo reboot ;;
 	"install")
-		shift	
-		if [ -x "$(command -v xbps-install)" ];then
-			sudo xbps-install "$@"
-		elif [ -x "$(command -v pacman)" ];then
-			sudo pacman -S "$@"
-		elif [ -x "$(command -v apt)" ];then
-			sudo apt install "$@"
-		elif [ -x "$(command -v dnf)" ];then
-			sudo dnf install "$@"
-		elif [ -x "$(command -v zypper)" ];then
-			sudo zypper install  "$@"
-		elif [ -x "$(command -v emerge)" ];then
-			sudo emerge "$@"
+		shift
+		if [ $pkg = "xbps-install" ] || [ $pkg = "emerge" ];then
+			sudo $pkg "$@"
+		elif [ $pkg = "pacman" ];then
+			sudo $pkg -S "$@"
+		else
+			sudo $pkg install "$@"
 		fi
 	;;
-	"update"|"upgrade") 
-		shift	
-		if [ -x "$(command -v xbps-install)" ];then
-			sudo xbps-install -u "$@"
-		elif [ -x "$(command -v pacman)" ];then
-			sudo pacman -Syu
-		elif [ -x "$(command -v apt)" ];then
-			sudo apt upgrade "$@"
-		elif [ -x "$(command -v dnf)" ];then
-			sudo dnf update "$@"
-		elif [ -x "$(command -v zypper)" ];then
-			sudo zypper update "$@"
-		elif [ -x "$(command -v emerge)" ];then
+	"update"|"upgrade")
+		shift
+		if [ $pkg = "xbps-install" ];then
+			sudo $pkg -u "$@"
+		elif [ $pkg = "pacman" ];then
+			sudo $pkg -Syu
+		elif [ $pkg = "apt" ];then
+			sudo $pkg upgrage "$@"
+		elif [ $pkg = "emerge" ];then
 			sudo emerge -[a]uDN @world "$@"
+		else
+			sudo $pkg update "$@"
 		fi
- 	;;
-	"search") 
-		shift	
-		if [ -x "$(command -v xbps-install)" ];then
+	;;
+	"search")
+		shift
+		if [ $pkg = "xbps-install" ];then
 			sudo xbps-query "$@"
-		elif [ -x "$(command -v pacman)" ];then
-			sudo pacman -Ss "$@"
-		elif [ -x "$(command -v apt)" ];then
-			sudo apt search "$@"
-		elif [ -x "$(command -v dnf)" ];then
-			sudo dnf search "$@"
-		elif [ -x "$(command -v zypper)" ];then
-			sudo zypper search "$@"
-		elif [ -x "$(command -v emerge)" ];then
+		elif [ $pkg = "pacman" ];then
+			sudo $pkg -Ss
+		elif [ $pkg = "emerge" ];then
 			sudo emerge -s "$@"
+		else
+			sudo $pkg search "$@"
 		fi
- 	;;
-	"uninstall"|"remove") 
-		shift	
-		if [ -x "$(command -v xbps-install)" ];then
+	;;
+	"unistall"|"remove")
+		shift
+		if [ $pkg = "xbps-install" ];then
 			sudo xbps-remove "$@"
-		elif [ -x "$(command -v pacman)" ];then
-			sudo pacman -Rs "$@"
-		elif [ -x "$(command -v apt)" ];then
-			sudo apt autoremove "$@"
-		elif [ -x "$(command -v dnf)" ];then
-			sudo dnf remove "$@"
-		elif [ -x "$(command -v zypper)" ];then
-			sudo zypper remove "$@"
-		elif [ -x "$(command -v emerge)" ];then
+		elif [ $pkg = "pacman" ];then
+			sudo $pkg -Rs
+		elif [ $pkg = "emerge" ];then
 			sudo emerge -c "$@"
+		else
+			sudo $pkg remove "$@"
 		fi
- 	;;
+
 esac
