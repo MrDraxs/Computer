@@ -1,13 +1,22 @@
 #!/usr/bin/env bash
 
 pkg_managers=("xbps-install" "pacman" "apt" "dnf" "zypper" "emerge")
+subpkg_managers=("brew")
 
 for pkg in "${pkg_managers[@]}"
 do
 	if [ -x "$(command -v $pkg)" ];then
+		for subpkg in "${subpkg_managers[@]}"
+		do
+			if [ -x "$(command -v $subpkg)" ];then
+				pkg=$subpkg
+				break
+			fi
+		done
 		break
 	fi
 done
+echo "$pkg"
 case "$1" in
 	"reboot") sudo reboot ;;
 	"install")
@@ -26,7 +35,7 @@ case "$1" in
 			sudo $pkg -u "$@"
 		elif [ $pkg = "pacman" ];then
 			sudo $pkg -Syu
-		elif [ $pkg = "apt" ];then
+		elif [ $pkg = "apt" ] || [ $pkg = "brew" ];then
 			sudo $pkg upgrage "$@"
 		elif [ $pkg = "emerge" ];then
 			sudo emerge -[a]uDN @world "$@"
@@ -54,6 +63,8 @@ case "$1" in
 			sudo $pkg -Rs
 		elif [ $pkg = "emerge" ];then
 			sudo emerge -c "$@"
+		elif [ $pkg = "brew" ];then
+			sudo $pkg uninstall "$@"
 		else
 			sudo $pkg remove "$@"
 		fi
