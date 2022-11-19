@@ -16,9 +16,9 @@ do
 		break
 	fi
 done
-echo "$pkg"
 case "$1" in
 	"reboot") sudo reboot ;;
+	"poweroff") sudo poweroff ;;
 	"install")
 		shift
 		if [ $pkg = "xbps-install" ] || [ $pkg = "emerge" ];then
