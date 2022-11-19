@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-pkg_managers=("xbps-install" "pacman" "apt" "dnf" "zypper" "emerge")
+pkg_managers=("xbps-install" "pacman" "apt" "dnf" "zypper" "emerge" "brew")
 subpkg_managers=("brew")
 
 for pkg in "${pkg_managers[@]}"
@@ -19,6 +19,7 @@ done
 case "$1" in
 	"reboot") sudo reboot ;;
 	"poweroff") sudo poweroff ;;
+	"delete"|"rm") shift; sudo rm "$@" ;;
 	"install")
 		shift
 		if [ $pkg = "xbps-install" ] || [ $pkg = "emerge" ];then
